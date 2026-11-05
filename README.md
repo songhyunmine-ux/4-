@@ -11,10 +11,14 @@ npm run dev
 
 프로덕션 빌드: `npm run build`
 
-## Vercel 배포
-Vercel에서 GitHub 저장소 `songhyunmine-ux/4-`를 Import하고 Production Branch를 `main`, Root Directory를 저장소 루트로 설정합니다. Node.js는 22.x를 권장합니다. `vercel.json`에 Vite 프레임워크, `npm ci` 설치, `npm run build` 빌드, `dist` 출력 경로를 지정했습니다. 별도 환경 변수나 서버는 필요하지 않습니다.
+## GitHub Pages 배포
+GitHub 저장소 Settings → Pages → Build and deployment에서 Source를 **GitHub Actions**로 선택합니다. Actions 탭의 `Deploy to GitHub Pages` 워크플로를 수동 실행하거나 `main`에 푸시하면 Node.js 22에서 `npm ci`, `npm run build` 후 `dist`를 배포합니다. 저장소에서 Actions 실행을 허용해야 하며, 배포 환경에 승인 규칙이 있으면 승인도 필요합니다.
 
-현재 앱은 단일 URL에서 내부 상태로 화면을 전환하므로 SPA rewrite가 필요하지 않습니다. 실제 통화 오디오를 사용하려면 `public/audio.mp3`를 커밋한 뒤 재배포하세요. Vercel 배포 URL은 프로젝트를 Import한 후 생성됩니다.
+배포 성공 후 주소: https://songhyunmine-ux.github.io/4-/
+
+Vite의 `base`는 `/4-/`입니다. 현재 앱은 URL 라우팅 없이 내부 상태로 전환하므로 SPA rewrite가 필요하지 않습니다. 별도 환경 변수와 서버도 필요하지 않습니다. 이전 Vercel 설정 파일은 남아 있지만 GitHub Actions에서는 사용하지 않습니다.
+
+정적 파일은 `public/`에 넣고 설정에는 `audio.mp3`처럼 상대 경로를 기록하세요. 오디오는 `publicAsset()`을 통해 Vite 기본 경로 아래로 해석됩니다. 향후 `public/`의 이미지를 사용할 때도 `publicAsset('images/example.png')`를 사용하세요. `src/`에서 import한 이미지와 CSS는 Vite가 기본 경로를 처리합니다. 현재 이미지는 CSS 배경과 SVG 아이콘이며 별도 이미지 파일은 없습니다. 실제 `public/audio.mp3`는 아직 없으므로 현재 통화는 자막으로 체험합니다.
 
 ## 체험
 - 하단 홈 바를 클릭하거나 위로 스와이프해 잠금 해제.

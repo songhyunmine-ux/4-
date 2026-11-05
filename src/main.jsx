@@ -2,6 +2,7 @@ import React, {useState,useEffect,useRef} from 'react';
 import {createRoot} from 'react-dom/client';
 import {MessageCircle,Phone,Camera,Image,Settings,ChevronLeft,ArrowUp,LockKeyhole,Flashlight,Signal,Wifi,BatteryFull,Mic,Volume2,Grid2X2,UserRound,Plus,Delete,PhoneOff,Check,ArrowUpRight,Headphones} from 'lucide-react';
 import story from './story.json';
+import {publicAsset} from './assets.js';
 import './style.css';
 
 function App(){
@@ -11,7 +12,7 @@ function App(){
  const clock=time.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false});
  useEffect(()=>{const i=setInterval(()=>setTime(new Date()),1000);return()=>{clearInterval(i);timers.current.forEach(clearTimeout)}},[]);
  useEffect(()=>{scroll.current?.scrollIntoView({behavior:'smooth'})},[chats,typing,app]);
- useEffect(()=>{if(!calling)return;const valid=number===story.contact.number;const lines=valid?story.call.captions:story.call.unavailable;setSeconds(0);setCaption('연결 중…');const connect=setTimeout(()=>{setCaption(lines[0]);if(valid){audio.current=new Audio(story.call.audio);audio.current.play().catch(()=>{});}},1200);const i=setInterval(()=>setSeconds(s=>s+1),1000);const captions=lines.slice(1).map((line,i)=>setTimeout(()=>setCaption(line),1200+(i+1)*5000));return()=>{clearTimeout(connect);clearInterval(i);captions.forEach(clearTimeout);audio.current?.pause();audio.current=null}},[calling]);
+ useEffect(()=>{if(!calling)return;const valid=number===story.contact.number;const lines=valid?story.call.captions:story.call.unavailable;setSeconds(0);setCaption('연결 중…');const connect=setTimeout(()=>{setCaption(lines[0]);if(valid){audio.current=new Audio(publicAsset(story.call.audio));audio.current.play().catch(()=>{});}},1200);const i=setInterval(()=>setSeconds(s=>s+1),1000);const captions=lines.slice(1).map((line,i)=>setTimeout(()=>setCaption(line),1200+(i+1)*5000));return()=>{clearTimeout(connect);clearInterval(i);captions.forEach(clearTimeout);audio.current?.pause();audio.current=null}},[calling]);
  const home=()=>{setApp(null);setDraft('');};
  const notify=(text)=>{setToast(text);timers.current.push(setTimeout(()=>setToast(''),2200))};
  const send=()=>{const text=draft.trim();if(!text||typing)return;const channel=app;setChats(c=>({...c,[channel]:[...c[channel],{id:crypto.randomUUID(),from:'me',text}]}));setDraft('');setTyping(true);timers.current.push(setTimeout(()=>{const reply=story.rules.find(r=>r.keywords.some(k=>text.includes(k)))?.reply??story.fallback;setChats(c=>({...c,[channel]:[...c[channel],{id:crypto.randomUUID(),from:'them',text:reply}]}));setTyping(false)},1500));};
